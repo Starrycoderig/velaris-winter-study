@@ -265,6 +265,102 @@ body { color: #fff9ed; font-size: 19px; }
 .map-cartouche text { fill:#5b4633; font:600 11px "Cinzel",serif; letter-spacing:1.2px; text-anchor:middle; }
 @media(max-width:620px){.map-labels{font-size:12px}.map-labels .map-title{font-size:20px}}
 
+/* ═══ EXPANDED FANTASY MAP ═══ */
+
+.vintage-journey .journey-map {
+  margin-top: 18px;
+  border: 4px solid #8a6945;
+  border-radius: 16px;
+  background: #d8c69c;
+  overflow: hidden;
+  box-shadow:
+    0 12px 35px rgba(0,0,0,.35),
+    inset 0 0 30px rgba(90,60,30,.2);
+}
+
+#fantasyMap {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 350px;
+  transition: viewBox .7s ease;
+}
+
+#fantasyMap .map-labels {
+  fill: #493521;
+  font: 700 23px Cinzel, serif;
+  letter-spacing: 2px;
+  paint-order: stroke;
+  stroke: #e8d8b5;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+
+#fantasyMap .map-title {
+  font-size: 42px;
+  letter-spacing: 8px;
+}
+
+#fantasyMap .map-subtitle {
+  font: italic 22px "Cormorant Garamond", serif;
+  letter-spacing: 4px;
+}
+
+#fantasyMap .journey-road-shadow {
+  fill: none;
+  stroke: #785638;
+  stroke-width: 24;
+  stroke-linecap: round;
+}
+
+#fantasyMap .journey-road {
+  fill: none;
+  stroke: #ead8b0;
+  stroke-width: 15;
+  stroke-linecap: round;
+  stroke-dasharray: 3 18;
+}
+
+#fantasyMap .journey-point {
+  fill: #8c6946;
+  stroke: #f7e8c8;
+  stroke-width: 4;
+  transition: fill .4s, r .4s;
+}
+
+#fantasyMap .journey-point.reached {
+  fill: #e7c56e;
+  stroke: #fff8d9;
+  filter: drop-shadow(0 0 8px #f4d37b);
+}
+
+#fantasyMap .map-princess {
+  filter: drop-shadow(0 5px 5px #49332177);
+  transition: transform .5s ease;
+}
+
+#fantasyMap #fantasyCastle {
+  transition: filter .5s;
+}
+
+#fantasyMap .castle-awakened {
+  filter: drop-shadow(0 0 18px #ffe8a0);
+}
+
+#fantasyMap .forest-awakened {
+  filter: drop-shadow(0 0 7px #c9e6a8);
+}
+
+@media(max-width:600px) {
+  #fantasyMap {
+    min-height: 260px;
+  }
+
+  #fantasyMap .map-labels {
+    font-size: 28px;
+  }
+}
+
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -337,71 +433,267 @@ window.LEGACY_IMPORT = {"through":"2026-10-17","days":{"2026-09-05":{"tasks":[{"
           <div class="progress-copy"><span>Daily progress</span><strong id="progressText">0 / 0 complete</strong></div>
           <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
         </div>
-        <section class="journey-card vintage-journey" aria-label="Illustrated vintage map of the princess's journey to the castle">
-          <div class="journey-heading"><span class="eyebrow">THE ROAD TO THE CASTLE</span><strong id="journeyCount">0 / 22 waypoints</strong></div>
-          <p>Twenty-two milestones lie between the quiet village and the winter castle. Each completed task carries the princess farther along the old road.</p>
-          <div class="journey-map">
-            <svg viewBox="0 0 1000 650" role="img" aria-label="Antique parchment map with mountains, forest, river, a winding road and a princess travelling to a castle">
-              <defs>
-                <pattern id="parchmentGrain" width="42" height="42" patternUnits="userSpaceOnUse">
-                  <circle cx="7" cy="9" r="1" fill="#8d6b43" opacity=".15"/><circle cx="31" cy="27" r=".8" fill="#8d6b43" opacity=".13"/>
-                  <path d="M3 35q8-3 15 0M25 5q6 2 12-1" fill="none" stroke="#9d8058" stroke-width=".7" opacity=".12"/>
-                </pattern>
-                <filter id="mapShadow" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="2" dy="3" stdDeviation="3" flood-color="#392b23" flood-opacity=".25"/></filter>
-              </defs>
-              <rect x="4" y="4" width="992" height="642" rx="18" class="map-paper"/>
-              <rect x="17" y="17" width="966" height="616" rx="12" class="map-grain"/>
-              <rect x="26" y="26" width="948" height="598" rx="8" class="map-border"/>
-              <path class="map-coast" d="M38 470 C120 440 130 500 205 485 S310 455 365 480 S475 470 525 500 S650 480 700 500 S820 475 960 500"/>
-              <g class="map-mountains" filter="url(#mapShadow)">
-                <path d="M60 175l66-112 55 78 46-90 79 123z"/><path d="M175 180l72-120 68 100 56-83 75 111z"/>
-                <path d="M350 148l62-99 63 88 46-66 78 110z"/>
-                <path class="snowcaps" d="M110 91l16-28 18 25-13-7-8 9-7-5zM222 91l25-31 22 33-18-11-11 12-8-6zM383 75l29-26 25 35-20-11-10 10-9-7zM515 82l30-32 28 41-20-13-12 13-10-9z"/>
-                <path d="M50 185q70-25 135 0M180 194q90-28 170-2M355 166q90-25 165 0" class="mountain-hatch"/>
-              </g>
-              <g class="map-hills"><path d="M40 265q90-65 180 0t180 0t180 0t180 0t180 0v210H40z"/><path d="M40 300q100-50 200 0t200 0t200 0t200 0t120 0" /></g>
-              <g class="map-river"><path d="M915 70 C840 120 900 170 820 220 S880 310 790 355 S840 445 735 485 S680 550 710 610" /><path class="river-highlight" d="M915 70 C840 120 900 170 820 220 S880 310 790 355 S840 445 735 485 S680 550 710 610"/></g>
-              <g class="map-forest">
-                <path d="M500 350l-18 30h12l-17 27h46l-17-27h12zM548 370l-18 30h12l-17 27h46l-17-27h12zM600 350l-18 30h12l-17 27h46l-17-27h12zM655 390l-18 30h12l-17 27h46l-17-27h12zM700 355l-18 30h12l-17 27h46l-17-27h12zM745 395l-18 30h12l-17 27h46l-17-27h12z"/>
-                <path d="M80 345l-15 26h10l-14 22h38l-14-22h10zM130 365l-15 26h10l-14 22h38l-14-22h10zM185 335l-15 26h10l-14 22h38l-14-22h10z"/>
-              </g>
-              <g class="map-landmarks">
-                <g transform="translate(110 540)"><path d="M-38 5h76v35h-76zM-30 5v-28h60V5M-38-23l38-24 38 24" /><path d="M-12 40v-23h24v23M-24-8h12v12h-12M12-8h12v12H12"/></g>
-                <g transform="translate(305 260)"><path d="M-30 22v-43h60v43M-40-21l40-28 40 28M-8 22v-27h16v27" /><path d="M-22-10h10v12h-10M12-10h10v12H12"/></g>
-                <g transform="translate(500 500)"><path d="M-35 10h70v30h-70zM-26 10v-28h52v28M-35-18l35-24 35 24M-8 40v-22h16v22"/></g>
-                <g transform="translate(830 140)"><circle r="27"/><path d="M0-20v40M-20 0h40M-14-14l28 28M14-14l-28 28"/></g>
-              </g>
-              <path class="journey-road-shadow" d="M105 520 C130 485 135 475 155 480 S185 450 205 435 S235 400 255 390 S290 365 310 350 S345 325 365 310 S400 290 420 275 S455 250 475 240 S510 220 530 205 S565 185 585 180 S620 155 640 165 S675 180 695 185 S725 205 745 225 S770 255 790 275 S810 305 830 330 S850 360 865 385 S885 415 890 440 S875 470 855 490 S825 520 800 525 S770 545 740 545 S705 540 675 535 S635 520 610 500"/>
-              <path class="journey-road" d="M105 520 C130 485 135 475 155 480 S185 450 205 435 S235 400 255 390 S290 365 310 350 S345 325 365 310 S400 290 420 275 S455 250 475 240 S510 220 530 205 S565 185 585 180 S620 155 640 165 S675 180 695 185 S725 205 745 225 S770 255 790 275 S810 305 830 330 S850 360 865 385 S885 415 890 440 S875 470 855 490 S825 520 800 525 S770 545 740 545 S705 540 675 535 S635 520 610 500"/>
-              <g id="journeyPoints"></g>
-              <g class="map-castle" transform="translate(610 480)" filter="url(#mapShadow)">
-                <path d="M-55 2v-60h18v-30h24v30h26v-30h24v30h18V2z"/>
-                <path d="M-55-58l9-15 9 15M-13-58l12-15 12 15M37-58l9-15 9 15"/>
-                <path d="M-12 2v-36q12-18 24 0V2M-40-30h13v14h-13M27-30h13v14H27"/>
-                <path d="M-70 3h140M-47 14h94" class="castle-base"/>
-                <path d="M-12-34q12-18 24 0" class="castle-window"/>
-              </g>
-              <g id="journeyPrincess" transform="translate(105 498)" class="map-princess" filter="url(#mapShadow)">
-                <path d="M-13 2q-18 12-11 31h48q7-19-11-31z" class="princess-cloak"/>
-                <path d="M-11 5q-4-23 11-25 16 2 11 25" class="princess-hair"/>
-                <circle cy="-28" r="12" class="princess-face"/>
-                <path d="M-12-37l-3-15 11 7 5-13 7 13 10-7-3 16" class="princess-crown"/>
-                <path d="M-5-28h2m8 0h2" class="princess-eyes"/>
-                <path d="M-4-21q4 4 8 0" class="princess-smile"/>
-                <path d="M-24 9l-12 18m48-18 12 18" class="princess-arms"/>
-              </g>
-              <g class="map-labels">
-                <text x="90" y="585">THE OLD VILLAGE</text><text x="310" y="230">THE WITCHWOOD</text>
-                <text x="520" y="465">THE FORGOTTEN BRIDGE</text><text x="590" y="430">WINTER CASTLE</text>
-                <text x="115" y="45" class="map-title">THE WINTER REALM</text>
-                <text x="115" y="65" class="map-subtitle">A JOURNEY OF TWENTY-TWO MILESTONES</text>
-              </g>
-              <g class="map-compass" transform="translate(910 555)"><circle r="37"/><path d="M0-29L8 0 0 29-8 0zM-29 0L0-8 29 0 0 8z"/><text x="0" y="-44">N</text></g>
-              <g class="map-cartouche" transform="translate(130 115)"><path d="M-55-20q-12 0-12 12v16q0 12 12 12h110q12 0 12-12v-16q0-12-12-12z"/><text x="0" y="2">THE NORTH PASS</text></g>
-              <g class="map-cartouche" transform="translate(830 590)"><path d="M-78-17q-10 0-10 10v14q0 10 10 10h156q10 0 10-10v-14q0-10-10-10z"/><text x="0" y="2">FOLLOW THE OLD ROAD</text></g>
-            </svg>
-          </div>
-        </section>
+        
+<section class="journey-card vintage-journey" aria-label="Fantasy journey map">
+  <div class="journey-heading">
+    <span class="eyebrow">THE ROAD TO THE FROSTBOUND CITADEL</span>
+    <strong id="journeyCount">0 / 22 waypoints</strong>
+  </div>
+
+  <p>Your journey through the forgotten kingdoms. Every completed task brings the realm back to life.</p>
+
+  <div class="journey-map">
+    <svg id="fantasyMap" viewBox="0 0 1400 1000"
+         role="img" aria-label="Illustrated fantasy kingdom">
+
+      <defs>
+        <linearGradient id="fantasyLand" x2="0" y2="1">
+          <stop stop-color="#d8c69c"/>
+          <stop offset="1" stop-color="#b8b18b"/>
+        </linearGradient>
+
+        <linearGradient id="fantasyLake" x2="0" y2="1">
+          <stop stop-color="#a5c8cb"/>
+          <stop offset="1" stop-color="#628e9a"/>
+        </linearGradient>
+
+        <linearGradient id="castleGlow">
+          <stop stop-color="#fff0b7"/>
+          <stop offset="1" stop-color="#d6a75e"/>
+        </linearGradient>
+
+        <filter id="fantasyGlow">
+          <feGaussianBlur stdDeviation="7" result="blur"/>
+          <feMerge>
+            <feMergeNode in="blur"/>
+            <feMergeNode in="SourceGraphic"/>
+          </feMerge>
+        </filter>
+
+        <pattern id="fantasyTexture" width="50" height="50"
+                 patternUnits="userSpaceOnUse">
+          <circle cx="10" cy="12" r="1" fill="#765b40" opacity=".18"/>
+          <circle cx="38" cy="35" r="1" fill="#765b40" opacity=".14"/>
+          <path d="M0 45q15-6 28 0" fill="none"
+                stroke="#765b40" opacity=".12"/>
+        </pattern>
+      </defs>
+
+      <!-- PARCHMENT -->
+      <rect width="1400" height="1000" rx="22"
+            fill="url(#fantasyLand)" stroke="#715438" stroke-width="9"/>
+      <rect x="18" y="18" width="1364" height="964"
+            fill="url(#fantasyTexture)" rx="15"/>
+      <rect x="35" y="35" width="1330" height="930"
+            fill="none" stroke="#96754c" stroke-width="3"/>
+
+      <!-- COAST / DISTANT LAND -->
+      <path d="M35 700 Q150 650 220 730 T420 710
+               T600 750 T800 720 T1030 780 T1365 700
+               L1365 965 L35 965 Z"
+            fill="#b3b991"/>
+
+      <!-- MOUNTAIN RANGE -->
+      <g fill="#9a8b78" stroke="#645746" stroke-width="5"
+         stroke-linejoin="round">
+        <path d="M35 280 L150 70 L260 250 L370 95
+                 L500 300 L35 350 Z"/>
+        <path d="M300 310 L450 55 L600 290 L730 90
+                 L890 330 Z"/>
+        <path d="M700 290 L850 60 L1010 285
+                 L1150 110 L1365 330 Z"/>
+      </g>
+
+      <!-- SNOW CAPS -->
+      <g fill="#f6f0dd" stroke="#b7a996" stroke-width="2">
+        <path d="M110 145 L150 70 L200 155 L155 130 L140 145 Z"/>
+        <path d="M325 180 L370 95 L420 185 L375 150 L355 170 Z"/>
+        <path d="M405 135 L450 55 L505 150 L460 120 L440 135 Z"/>
+        <path d="M680 165 L730 90 L780 170 L735 140 L715 160 Z"/>
+        <path d="M800 140 L850 60 L910 160 L860 120 L840 140 Z"/>
+        <path d="M1100 185 L1150 110 L1200 195 L1155 165 L1135 180 Z"/>
+      </g>
+
+      <!-- FOREST REGION -->
+      <g id="whisperingForest">
+        <path d="M40 380 Q200 320 380 390 T700 380
+                 T1050 400 T1360 360 L1360 650
+                 Q1100 700 850 620 T450 650 T40 620 Z"
+              fill="#91a17b"/>
+
+        <g fill="#536d50" stroke="#354e3d" stroke-width="3">
+          <path d="M100 560l-35 55h20l-32 50h94l-32-50h20z"/>
+          <path d="M180 520l-40 65h24l-36 54h104l-36-54h24z"/>
+          <path d="M270 580l-34 52h20l-30 45h88l-30-45h20z"/>
+          <path d="M1000 560l-35 55h20l-32 50h94l-32-50h20z"/>
+          <path d="M1100 520l-40 65h24l-36 54h104l-36-54h24z"/>
+          <path d="M1220 580l-34 52h20l-30 45h88l-30-45h20z"/>
+          <path d="M800 600l-38 60h22l-34 50h100l-34-50h22z"/>
+        </g>
+      </g>
+
+      <!-- ENCHANTED LAKE -->
+      <g>
+        <path d="M420 470 Q500 405 600 455
+                 Q700 480 665 555
+                 Q620 620 520 575
+                 Q410 560 420 470Z"
+              fill="url(#fantasyLake)" stroke="#557e87" stroke-width="5"/>
+        <path d="M455 480 Q520 445 610 485"
+              fill="none" stroke="#e5f3e9" stroke-width="4"/>
+        <text x="535" y="530" text-anchor="middle"
+              class="fantasy-label">STARFALL LAKE</text>
+      </g>
+
+      <!-- RUINED TOWER -->
+      <g transform="translate(250 390)" fill="#8d826d"
+         stroke="#655744" stroke-width="4">
+        <path d="M-32 55V-40L-10-65L12-40V55Z"/>
+        <path d="M-10-65V-105L18-82V-40"/>
+        <path d="M-32-40H12M-10-65H18"/>
+        <path d="M-8 15H8V55H-8Z" fill="#554838"/>
+      </g>
+
+      <!-- BRIDGE -->
+      <g transform="translate(720 690)">
+        <path d="M-65 0 Q0-45 65 0"
+              fill="none" stroke="#75543a" stroke-width="22"/>
+        <path d="M-65 0 Q0-45 65 0"
+              fill="none" stroke="#c6a67a" stroke-width="13"/>
+      </g>
+
+      <!-- VILLAGE -->
+      <g transform="translate(120 790)" stroke="#76583a" stroke-width="3">
+        <g fill="#d5b58a">
+          <path d="M-35 0V-50L0-80L35-50V0Z"/>
+          <path d="M50 10V-35L80-60L110-35V10Z"/>
+          <path d="M-90 15V-25L-60-50L-30-25V15Z"/>
+        </g>
+        <g fill="#70513c">
+          <path d="M-12 0V-35H12V0Z"/>
+          <path d="M65 10V-20H85V10Z"/>
+        </g>
+      </g>
+
+      <!-- ROADS -->
+      <path class="journey-road-shadow"
+        d="M120 790 C180 740 220 680 260 650
+           S360 620 390 560 S470 500 540 520
+           S680 590 720 690 S820 720 900 650
+           S1000 590 1080 500 S1150 420 1240 350"/>
+
+      <path class="journey-road"
+        d="M120 790 C180 740 220 680 260 650
+           S360 620 390 560 S470 500 540 520
+           S680 590 720 690 S820 720 900 650
+           S1000 590 1080 500 S1150 420 1240 350"/>
+
+      <!-- CASTLE -->
+      <g id="fantasyCastle" transform="translate(1240 350)"
+         fill="#b69b79" stroke="#66503a" stroke-width="6"
+         stroke-linejoin="round">
+
+        <path d="M-120 80V-70H-85V-135H-45V-70
+                 H-15V-120H30V-70H70V-135H110V-70H125V80Z"/>
+
+        <path d="M-140-70L-105-110L-70-70
+                 M-65-135L-45-165L-25-135
+                 M5-120L30-150L55-120
+                 M50-135L70-165L90-135"/>
+
+        <path d="M-30 80V-5Q0-45 30-5V80Z"
+              fill="#493e39"/>
+        <path d="M-95-35H-65V-5H-95Z
+                 M70-35H100V-5H70Z"
+              fill="#f4d991" filter="url(#fantasyGlow)"/>
+
+        <path d="M-130 80H130" fill="none" stroke="#493e39"/>
+      </g>
+
+      <!-- DYNAMIC WAYPOINTS -->
+      <g id="journeyPoints"></g>
+
+      <!-- PRINCESS: IMPROVED SVG CHARACTER -->
+      <g id="journeyPrincess" transform="translate(120 760)"
+         class="map-princess">
+
+        <!-- Long hair behind body -->
+        <path d="M-17-38 Q-32-12-24 12
+                 L-18 40 L-8 16 L0 42
+                 L12 15 L22 35 Q32-5 15-38Z"
+              fill="#49302c" stroke="#30201e" stroke-width="3"/>
+
+        <!-- Flowing cloak -->
+        <path d="M-14-12 Q-30 4-36 38
+                 Q-20 30-10 52
+                 L12 52 Q28 25 38 38
+                 Q30 0 14-12Z"
+              fill="#75416e" stroke="#482748" stroke-width="3"/>
+
+        <!-- Gown -->
+        <path d="M-12-12L-20 18L-30 52
+                 Q0 65 30 52L20 18L12-12Z"
+              fill="#b8a0d8" stroke="#69517e" stroke-width="3"/>
+
+        <!-- Gown details -->
+        <path d="M0-4L-5 48M-15 25L-24 48
+                 M15 25L24 48"
+              fill="none" stroke="#eadcf7" stroke-width="3"/>
+
+        <!-- Arms -->
+        <path d="M-15-8L-31 12M15-8L30 12"
+              stroke="#e6bfa1" stroke-width="7"
+              stroke-linecap="round"/>
+
+        <!-- Face -->
+        <ellipse cy="-33" rx="13" ry="16"
+                 fill="#edc9a7" stroke="#875f48" stroke-width="2"/>
+
+        <!-- Hair -->
+        <path d="M-14-34Q-20-58 0-57
+                 Q20-58 15-34L12-45L-12-45Z"
+              fill="#49302c" stroke="#30201e" stroke-width="2"/>
+
+        <!-- Crown -->
+        <path d="M-15-47L-13-59L-5-51
+                 L0-65L6-51L14-59L16-47Z"
+              fill="#e6c66f" stroke="#8c652f" stroke-width="2"/>
+
+        <!-- Face features -->
+        <circle cx="-5" cy="-33" r="1.8" fill="#46302a"/>
+        <circle cx="5" cy="-33" r="1.8" fill="#46302a"/>
+        <path d="M-4-26Q0-23 4-26"
+              fill="none" stroke="#87513e" stroke-width="1.5"/>
+
+        <!-- Boots -->
+        <path d="M-12 48V61H-1V53
+                 M8 48V61H19V53"
+              fill="#46302c" stroke="#30201e" stroke-width="2"/>
+      </g>
+
+      <!-- REGION LABELS -->
+      <g class="map-labels">
+        <text x="90" y="880">THE QUIET VILLAGE</text>
+        <text x="140" y="330">THE WHISPERING PINES</text>
+        <text x="210" y="445">THE RUINED WATCHTOWER</text>
+        <text x="500" y="400">STARFALL LAKE</text>
+        <text x="650" y="770">MOONSTONE BRIDGE</text>
+        <text x="1010" y="420">THE FROSTBOUND CITADEL</text>
+      </g>
+
+      <!-- MAP TITLE -->
+      <g class="map-labels">
+        <text x="700" y="90" text-anchor="middle"
+              class="map-title">THE WINTER REALM</text>
+        <text x="700" y="120" text-anchor="middle"
+              class="map-subtitle">
+          A JOURNEY THROUGH FORGOTTEN KINGDOMS
+        </text>
+      </g>
+
+    </svg>
+  </div>
+</section>
       </div>
 
       <section class="quote-panel" aria-live="polite">
@@ -703,7 +995,15 @@ window.LEGACY_IMPORT = {"through":"2026-10-17","days":{"2026-09-05":{"tasks":[{"
     if (currentView==="records") tasks = [];
     return tasks;
   };
-  const JOURNEY_NODES = [[105,520],[155,480],[205,435],[255,390],[310,350],[365,310],[420,275],[475,240],[530,205],[585,180],[640,165],[695,185],[745,225],[790,275],[830,330],[865,385],[890,440],[855,490],[800,525],[740,545],[675,535],[610,500]];
+
+const JOURNEY_NODES = [
+  [120,790],[180,740],[220,680],[260,650],
+  [330,630],[390,560],[460,510],[540,520],
+  [620,560],[720,690],[790,710],[850,690],
+  [900,650],[970,610],[1030,550],[1080,500],
+  [1140,450],[1180,410],[1200,380],[1220,360],
+  [1230,355],[1240,350]
+];
   function updateJourney() {
     const journeyTasks = state.tasks.filter(t=>!t.deleted && !t.legacy && Number(t.minutes)>0 && t.date >= "2026-11-02" && t.date <= "2026-12-16");
     const completed = journeyTasks.filter(t=>t.completed).length;
@@ -725,6 +1025,38 @@ window.LEGACY_IMPORT = {"through":"2026-10-17","days":{"2026-09-05":{"tasks":[{"
       points.dataset.ready = "1";
     }
     if (points) points.querySelectorAll(".journey-point").forEach((el,i)=>el.classList.toggle("reached",i<reachedCount));
+    
+    // Fantasy map progression
+    const fantasyMap = $("#fantasyMap");
+
+    if (fantasyMap) {
+      // Gradually explore and zoom into the realm
+      const zoom = ratio * 180;
+
+      fantasyMap.setAttribute(
+        "viewBox",
+        `${ratio * 110} ${ratio * 90} ${1400 - zoom} ${1000 - zoom * .65}`
+      );
+
+      // Forest begins to glow as the princess enters it
+      const forest = $("#whisperingForest");
+      if (forest) {
+        forest.classList.toggle("forest-awakened", ratio > .15);
+      }
+
+      // Castle magic awakens near the end
+      const castle = $("#fantasyCastle");
+      if (castle) {
+        castle.classList.toggle("castle-awakened", ratio > .75);
+      }
+
+      // More completed tasks = more magical journey
+      fantasyMap.style.filter =
+        ratio > .85
+          ? "saturate(1.18) brightness(1.04)"
+          : "none";
+    }
+
     $("#journeyCount").textContent = `${reachedCount} / 22 waypoints`;
   }
   function render() {
