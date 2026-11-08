@@ -415,6 +415,145 @@ window.LEGACY_IMPORT = {"through":"2026-10-17","days":{"2026-09-05":{"tasks":[{"
         <button class="outline-button" id="addTaskButton" type="button">＋ Add task</button>
       </div>
       <div id="taskList" class="task-list"></div>
+      <!-- VELARIS BULK TASK MANAGER -->
+<style>
+  .bulk-manager {
+    margin: 22px 0;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    background: var(--panel);
+  }
+  .bulk-manager h3 {
+    font: 500 19px Cinzel, serif;
+    margin: 0 0 8px;
+  }
+  .bulk-manager p {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .bulk-manager input,
+  .bulk-manager select,
+  .bulk-manager textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin: 6px 0 12px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: var(--panel);
+    color: var(--cream);
+    font: inherit;
+  }
+  .bulk-manager textarea { min-height: 100px; resize: vertical; }
+  .bulk-manager button {
+    margin: 4px 5px 4px 0;
+    padding: 9px 13px;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    background: #302443;
+    color: var(--cream);
+    cursor: pointer;
+  }
+  .bulk-manager button:hover { border-color: var(--lav); }
+  .bulk-task-list {
+    max-height: 240px;
+    overflow-y: auto;
+    margin: 12px 0;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+  .bulk-task-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    padding: 7px 3px;
+    color: var(--cream);
+    font-size: 13px;
+  }
+  .bulk-task-option input { width: auto; margin: 3px 0 0; }
+  .bulk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+    gap: 10px;
+  }
+  .bulk-divider {
+    border: 0;
+    border-top: 1px solid var(--line);
+    margin: 18px 0;
+  }
+</style>
+
+<section class="bulk-manager" id="bulkTaskManager">
+  <div class="eyebrow">YOUR QUEST LOG</div>
+  <h3>Bulk Task Manager ✦</h3>
+  <p>Select tasks, move them together, duplicate a day, or add several tasks at once.</p>
+
+  <label for="bulkSourceDate">Show tasks scheduled for:</label>
+  <input type="date" id="bulkSourceDate" max="2026-12-16">
+
+  <button type="button" id="bulkSelectAll">Select all tasks on this date</button>
+  <button type="button" id="bulkClear">Clear selection</button>
+
+  <div id="bulkTaskChoices" class="bulk-task-list">
+    <p>Select a date to see its tasks.</p>
+  </div>
+
+  <p id="bulkSelectionCount">0 tasks selected</p>
+
+  <div class="bulk-grid">
+    <div>
+      <label for="bulkMoveDate">Move selected tasks to:</label>
+      <input type="date" id="bulkMoveDate" max="2026-12-16">
+      <button type="button" id="bulkMoveButton">Move selected tasks</button>
+    </div>
+  </div>
+
+  <hr class="bulk-divider">
+
+  <h3>Duplicate an entire day</h3>
+  <p>Copies every task from one date to another. Original tasks remain unchanged.</p>
+
+  <div class="bulk-grid">
+    <div>
+      <label for="bulkDuplicateFrom">Copy tasks from:</label>
+      <input type="date" id="bulkDuplicateFrom" max="2026-12-16">
+    </div>
+    <div>
+      <label for="bulkDuplicateTo">Copy them to:</label>
+      <input type="date" id="bulkDuplicateTo" max="2026-12-16">
+    </div>
+  </div>
+  <button type="button" id="bulkDuplicateButton">Duplicate this day</button>
+
+  <hr class="bulk-divider">
+
+  <h3>Add multiple tasks</h3>
+  <p>Enter one task per line. Each task will be added as incomplete.</p>
+
+  <label for="bulkAddDate">Date:</label>
+  <input type="date" id="bulkAddDate" max="2026-12-16">
+
+  <label for="bulkAddCategory">Category:</label>
+  <select id="bulkAddCategory">
+    <option>Psychology</option>
+    <option>Paper 1</option>
+    <option>Mock test</option>
+    <option>Revision</option>
+    <option>Personal</option>
+    <option>Other</option>
+  </select>
+
+  <label for="bulkAddMinutes">Duration per task (minutes):</label>
+  <input type="number" id="bulkAddMinutes" min="0" max="1440" value="45">
+
+  <label for="bulkAddTitles">Task names:</label>
+  <textarea id="bulkAddTitles" placeholder="Revise Research Methods&#10;Solve 30 MCQs&#10;Review error log"></textarea>
+
+  <button type="button" id="bulkAddButton">Add all tasks ✦</button>
+</section>
+<!-- END VELARIS BULK TASK MANAGER -->
       <div id="emptyState" class="empty-state" hidden>
         <div class="empty-symbol">✧</div><h3>A quiet page</h3><p>No tasks here yet. Add one or switch to another view.</p>
       </div>
@@ -718,6 +857,206 @@ window.LEGACY_IMPORT = {"through":"2026-10-17","days":{"2026-09-05":{"tasks":[{"
     state.tasks.push({id:makeId(),date,title,category:$("#taskCategory").value,minutes:Number($("#taskMinutes").value)||0,completed:false,updated_at:new Date().toISOString()});
     saveLocal(); render(); queueSync(); $("#taskDialog").close(); $("#taskForm").reset(); showReward({completed:true});
   });
+  // ========================================
+// VELARIS BULK TASK MANAGER FUNCTIONALITY
+// ========================================
+
+const bulkSelectedIds = new Set();
+
+function bulkValidDate(date) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(date) && date <= "2026-12-16";
+}
+
+function renderBulkChoices() {
+  const date = $("#bulkSourceDate").value;
+  const container = $("#bulkTaskChoices");
+  const tasks = state.tasks.filter(t =>
+    t.date === date && !t.deleted
+  );
+
+  container.innerHTML = "";
+
+  if (!date) {
+    container.textContent = "Choose a date to see its tasks.";
+    return;
+  }
+
+  if (!tasks.length) {
+    container.textContent = "No tasks found for this date.";
+    return;
+  }
+
+  tasks.forEach(task => {
+    const label = document.createElement("label");
+    label.className = "bulk-task-option";
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = bulkSelectedIds.has(task.id);
+    checkbox.addEventListener("change", () => {
+      if (checkbox.checked) bulkSelectedIds.add(task.id);
+      else bulkSelectedIds.delete(task.id);
+      updateBulkCount();
+    });
+
+    const description = document.createElement("span");
+    description.textContent =
+      `${task.completed ? "✓ " : ""}${task.title} · ${task.minutes || 0} min`;
+
+    label.append(checkbox, description);
+    container.appendChild(label);
+  });
+
+  updateBulkCount();
+}
+
+function updateBulkCount() {
+  $("#bulkSelectionCount").textContent =
+    `${bulkSelectedIds.size} task(s) selected`;
+}
+
+function finishBulkChange(message) {
+  saveLocal();
+  render();
+  queueSync();
+  renderBulkChoices();
+  updateBulkCount();
+  alert(message);
+}
+
+$("#bulkSourceDate").value = todayISO();
+$("#bulkAddDate").value = todayISO();
+$("#bulkDuplicateFrom").value = todayISO();
+
+$("#bulkSourceDate").addEventListener("change", () => {
+  bulkSelectedIds.clear();
+  renderBulkChoices();
+});
+
+$("#bulkSelectAll").addEventListener("click", () => {
+  const date = $("#bulkSourceDate").value;
+  if (!date) return alert("Choose a date first.");
+
+  state.tasks
+    .filter(t => t.date === date && !t.deleted)
+    .forEach(t => bulkSelectedIds.add(t.id));
+
+  renderBulkChoices();
+});
+
+$("#bulkClear").addEventListener("click", () => {
+  bulkSelectedIds.clear();
+  renderBulkChoices();
+});
+
+$("#bulkMoveButton").addEventListener("click", () => {
+  const newDate = $("#bulkMoveDate").value;
+
+  if (!bulkSelectedIds.size)
+    return alert("Select at least one task first.");
+
+  if (!bulkValidDate(newDate))
+    return alert("Choose a valid date no later than December 16, 2026.");
+
+  const selected = state.tasks.filter(t =>
+    bulkSelectedIds.has(t.id) && !t.deleted
+  );
+
+  if (!selected.length)
+    return alert("No active selected tasks were found.");
+
+  if (!confirm(`Move ${selected.length} task(s) to ${newDate}?`))
+    return;
+
+  const timestamp = new Date().toISOString();
+
+  selected.forEach(task => {
+    task.date = newDate;
+    task.updated_at = timestamp;
+  });
+
+  bulkSelectedIds.clear();
+  finishBulkChange(`${selected.length} task(s) moved successfully.`);
+});
+
+$("#bulkDuplicateButton").addEventListener("click", () => {
+  const from = $("#bulkDuplicateFrom").value;
+  const to = $("#bulkDuplicateTo").value;
+
+  if (!bulkValidDate(from) || !bulkValidDate(to))
+    return alert("Choose valid dates no later than December 16, 2026.");
+
+  if (from === to)
+    return alert("Choose two different dates.");
+
+  const originals = state.tasks.filter(t =>
+    t.date === from && !t.deleted
+  );
+
+  if (!originals.length)
+    return alert("There are no tasks to duplicate on that date.");
+
+  if (!confirm(`Copy ${originals.length} task(s) from ${from} to ${to}?`))
+    return;
+
+  const timestamp = new Date().toISOString();
+
+  const copies = originals.map(task => ({
+    ...task,
+    id: makeId(),
+    date: to,
+    completed: false,
+    updated_at: timestamp
+  }));
+
+  state.tasks.push(...copies);
+  finishBulkChange(`${copies.length} task(s) duplicated successfully.`);
+});
+
+$("#bulkAddButton").addEventListener("click", () => {
+  const date = $("#bulkAddDate").value;
+  const category = $("#bulkAddCategory").value;
+  const minutes = Number($("#bulkAddMinutes").value);
+  const titles = $("#bulkAddTitles").value
+    .split("\n")
+    .map(title => title.trim())
+    .filter(Boolean);
+
+  if (!bulkValidDate(date))
+    return alert("Choose a valid date no later than December 16, 2026.");
+
+  if (!Number.isFinite(minutes) || minutes < 0 || minutes > 1440)
+    return alert("Enter a duration between 0 and 1440 minutes.");
+
+  if (!titles.length)
+    return alert("Enter at least one task name.");
+
+  if (!confirm(`Add ${titles.length} task(s) to ${date}?`))
+    return;
+
+  const timestamp = new Date().toISOString();
+
+  const newTasks = titles.map(title => ({
+    id: makeId(),
+    date,
+    title: title.slice(0, 140),
+    category,
+    minutes,
+    completed: false,
+    updated_at: timestamp
+  }));
+
+  state.tasks.push(...newTasks);
+
+  $("#bulkAddTitles").value = "";
+  finishBulkChange(`${newTasks.length} task(s) added successfully.`);
+});
+
+renderBulkChoices();
+
+// ========================================
+// END BULK TASK MANAGER
+// ========================================
   $("#dismissReward").addEventListener("click",()=>$("#rewardToast").hidden=true);
   $("#newQuote").addEventListener("click",()=>{currentQuote=(currentQuote+1)%QUOTES.length;renderQuote();});
   function renderQuote(){const q=QUOTES[currentQuote];$("#quoteText").textContent=q.text;$("#quoteSource").textContent=q.source;}
