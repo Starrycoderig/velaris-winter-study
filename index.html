@@ -267,16 +267,41 @@ body { color: #fff9ed; font-size: 19px; }
 
 /* ═══ EXPANDED FANTASY MAP ═══ */
 
+
 .vintage-journey .journey-map {
-  margin-top: 18px;
-  border: 4px solid #8a6945;
-  border-radius: 16px;
-  background: #d8c69c;
+  margin-top: 14px;
+  border-radius: 14px;
   overflow: hidden;
+  border: 1px solid #c99b68;
   box-shadow:
-    0 12px 35px rgba(0,0,0,.35),
-    inset 0 0 30px rgba(90,60,30,.2);
+    0 0 25px rgba(164, 105, 255, .18),
+    0 12px 35px rgba(0,0,0,.4);
+  background: #171225;
 }
+
+#fantasyMap {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+#questRoute {
+  filter: drop-shadow(0 0 5px #ffd77a);
+}
+
+.journey-point {
+  fill: #39234d;
+  stroke: #ffe5a8;
+  stroke-width: 3;
+  transition: all .3s ease;
+}
+
+.journey-point.reached {
+  fill: #ffdc8a;
+  stroke: #fff9e9;
+  filter: drop-shadow(0 0 8px #ffd16b);
+}
+
 
 #fantasyMap {
   display: block;
@@ -443,255 +468,55 @@ window.LEGACY_IMPORT = {"through":"2026-10-17","days":{"2026-09-05":{"tasks":[{"
   <p>Your journey through the forgotten kingdoms. Every completed task brings the realm back to life.</p>
 
   <div class="journey-map">
-    <svg id="fantasyMap" viewBox="0 0 1400 1000"
-         role="img" aria-label="Illustrated fantasy kingdom">
+    
+<svg id="fantasyMap" viewBox="0 0 1536 1024"
+     role="img" aria-label="Illustrated fantasy quest map">
 
-      <defs>
-        <linearGradient id="fantasyLand" x2="0" y2="1">
-          <stop stop-color="#d8c69c"/>
-          <stop offset="1" stop-color="#b8b18b"/>
-        </linearGradient>
+  <image href="winter-realm-map.png"
+         x="0" y="0" width="1536" height="1024"
+         preserveAspectRatio="none"/>
 
-        <linearGradient id="fantasyLake" x2="0" y2="1">
-          <stop stop-color="#a5c8cb"/>
-          <stop offset="1" stop-color="#628e9a"/>
-        </linearGradient>
+  <defs>
+    <filter id="magicGlow">
+      <feGaussianBlur stdDeviation="5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
 
-        <linearGradient id="castleGlow">
-          <stop stop-color="#fff0b7"/>
-          <stop offset="1" stop-color="#d6a75e"/>
-        </linearGradient>
+  <!-- Progress route -->
+  <path id="questRoute"
+        d="M400 850
+           C500 810 570 790 620 750
+           S760 700 780 740
+           S850 690 850 620
+           S780 570 700 600
+           S500 610 480 560
+           S450 470 500 420
+           S650 390 750 350
+           S950 370 1100 420
+           S1250 330 1300 250"
+        fill="none"
+        stroke="#ffe3a1"
+        stroke-width="5"
+        stroke-dasharray="3 16"
+        stroke-linecap="round"
+        opacity=".9"/>
 
-        <filter id="fantasyGlow">
-          <feGaussianBlur stdDeviation="7" result="blur"/>
-          <feMerge>
-            <feMergeNode in="blur"/>
-            <feMergeNode in="SourceGraphic"/>
-          </feMerge>
-        </filter>
+  <g id="journeyPoints"></g>
 
-        <pattern id="fantasyTexture" width="50" height="50"
-                 patternUnits="userSpaceOnUse">
-          <circle cx="10" cy="12" r="1" fill="#765b40" opacity=".18"/>
-          <circle cx="38" cy="35" r="1" fill="#765b40" opacity=".14"/>
-          <path d="M0 45q15-6 28 0" fill="none"
-                stroke="#765b40" opacity=".12"/>
-        </pattern>
-      </defs>
+  <!-- Moving magical progress marker -->
+  <g id="journeyPrincess" filter="url(#magicGlow)">
+    <circle r="17" fill="#fff0bd" opacity=".22"/>
+    <circle r="9" fill="#ffd67a" stroke="#fff8df" stroke-width="2"/>
+    <path d="M0-19 L4-5 L18 0 L4 5 L0 19 L-4 5 L-18 0 L-4-5Z"
+          fill="#fff8df"/>
+  </g>
 
-      <!-- PARCHMENT -->
-      <rect width="1400" height="1000" rx="22"
-            fill="url(#fantasyLand)" stroke="#715438" stroke-width="9"/>
-      <rect x="18" y="18" width="1364" height="964"
-            fill="url(#fantasyTexture)" rx="15"/>
-      <rect x="35" y="35" width="1330" height="930"
-            fill="none" stroke="#96754c" stroke-width="3"/>
+</svg>
 
-      <!-- COAST / DISTANT LAND -->
-      <path d="M35 700 Q150 650 220 730 T420 710
-               T600 750 T800 720 T1030 780 T1365 700
-               L1365 965 L35 965 Z"
-            fill="#b3b991"/>
-
-      <!-- MOUNTAIN RANGE -->
-      <g fill="#9a8b78" stroke="#645746" stroke-width="5"
-         stroke-linejoin="round">
-        <path d="M35 280 L150 70 L260 250 L370 95
-                 L500 300 L35 350 Z"/>
-        <path d="M300 310 L450 55 L600 290 L730 90
-                 L890 330 Z"/>
-        <path d="M700 290 L850 60 L1010 285
-                 L1150 110 L1365 330 Z"/>
-      </g>
-
-      <!-- SNOW CAPS -->
-      <g fill="#f6f0dd" stroke="#b7a996" stroke-width="2">
-        <path d="M110 145 L150 70 L200 155 L155 130 L140 145 Z"/>
-        <path d="M325 180 L370 95 L420 185 L375 150 L355 170 Z"/>
-        <path d="M405 135 L450 55 L505 150 L460 120 L440 135 Z"/>
-        <path d="M680 165 L730 90 L780 170 L735 140 L715 160 Z"/>
-        <path d="M800 140 L850 60 L910 160 L860 120 L840 140 Z"/>
-        <path d="M1100 185 L1150 110 L1200 195 L1155 165 L1135 180 Z"/>
-      </g>
-
-      <!-- FOREST REGION -->
-      <g id="whisperingForest">
-        <path d="M40 380 Q200 320 380 390 T700 380
-                 T1050 400 T1360 360 L1360 650
-                 Q1100 700 850 620 T450 650 T40 620 Z"
-              fill="#91a17b"/>
-
-        <g fill="#536d50" stroke="#354e3d" stroke-width="3">
-          <path d="M100 560l-35 55h20l-32 50h94l-32-50h20z"/>
-          <path d="M180 520l-40 65h24l-36 54h104l-36-54h24z"/>
-          <path d="M270 580l-34 52h20l-30 45h88l-30-45h20z"/>
-          <path d="M1000 560l-35 55h20l-32 50h94l-32-50h20z"/>
-          <path d="M1100 520l-40 65h24l-36 54h104l-36-54h24z"/>
-          <path d="M1220 580l-34 52h20l-30 45h88l-30-45h20z"/>
-          <path d="M800 600l-38 60h22l-34 50h100l-34-50h22z"/>
-        </g>
-      </g>
-
-      <!-- ENCHANTED LAKE -->
-      <g>
-        <path d="M420 470 Q500 405 600 455
-                 Q700 480 665 555
-                 Q620 620 520 575
-                 Q410 560 420 470Z"
-              fill="url(#fantasyLake)" stroke="#557e87" stroke-width="5"/>
-        <path d="M455 480 Q520 445 610 485"
-              fill="none" stroke="#e5f3e9" stroke-width="4"/>
-        <text x="535" y="530" text-anchor="middle"
-              class="fantasy-label">STARFALL LAKE</text>
-      </g>
-
-      <!-- RUINED TOWER -->
-      <g transform="translate(250 390)" fill="#8d826d"
-         stroke="#655744" stroke-width="4">
-        <path d="M-32 55V-40L-10-65L12-40V55Z"/>
-        <path d="M-10-65V-105L18-82V-40"/>
-        <path d="M-32-40H12M-10-65H18"/>
-        <path d="M-8 15H8V55H-8Z" fill="#554838"/>
-      </g>
-
-      <!-- BRIDGE -->
-      <g transform="translate(720 690)">
-        <path d="M-65 0 Q0-45 65 0"
-              fill="none" stroke="#75543a" stroke-width="22"/>
-        <path d="M-65 0 Q0-45 65 0"
-              fill="none" stroke="#c6a67a" stroke-width="13"/>
-      </g>
-
-      <!-- VILLAGE -->
-      <g transform="translate(120 790)" stroke="#76583a" stroke-width="3">
-        <g fill="#d5b58a">
-          <path d="M-35 0V-50L0-80L35-50V0Z"/>
-          <path d="M50 10V-35L80-60L110-35V10Z"/>
-          <path d="M-90 15V-25L-60-50L-30-25V15Z"/>
-        </g>
-        <g fill="#70513c">
-          <path d="M-12 0V-35H12V0Z"/>
-          <path d="M65 10V-20H85V10Z"/>
-        </g>
-      </g>
-
-      <!-- ROADS -->
-      <path class="journey-road-shadow"
-        d="M120 790 C180 740 220 680 260 650
-           S360 620 390 560 S470 500 540 520
-           S680 590 720 690 S820 720 900 650
-           S1000 590 1080 500 S1150 420 1240 350"/>
-
-      <path class="journey-road"
-        d="M120 790 C180 740 220 680 260 650
-           S360 620 390 560 S470 500 540 520
-           S680 590 720 690 S820 720 900 650
-           S1000 590 1080 500 S1150 420 1240 350"/>
-
-      <!-- CASTLE -->
-      <g id="fantasyCastle" transform="translate(1240 350)"
-         fill="#b69b79" stroke="#66503a" stroke-width="6"
-         stroke-linejoin="round">
-
-        <path d="M-120 80V-70H-85V-135H-45V-70
-                 H-15V-120H30V-70H70V-135H110V-70H125V80Z"/>
-
-        <path d="M-140-70L-105-110L-70-70
-                 M-65-135L-45-165L-25-135
-                 M5-120L30-150L55-120
-                 M50-135L70-165L90-135"/>
-
-        <path d="M-30 80V-5Q0-45 30-5V80Z"
-              fill="#493e39"/>
-        <path d="M-95-35H-65V-5H-95Z
-                 M70-35H100V-5H70Z"
-              fill="#f4d991" filter="url(#fantasyGlow)"/>
-
-        <path d="M-130 80H130" fill="none" stroke="#493e39"/>
-      </g>
-
-      <!-- DYNAMIC WAYPOINTS -->
-      <g id="journeyPoints"></g>
-
-      <!-- PRINCESS: IMPROVED SVG CHARACTER -->
-      <g id="journeyPrincess" transform="translate(120 760)"
-         class="map-princess">
-
-        <!-- Long hair behind body -->
-        <path d="M-17-38 Q-32-12-24 12
-                 L-18 40 L-8 16 L0 42
-                 L12 15 L22 35 Q32-5 15-38Z"
-              fill="#49302c" stroke="#30201e" stroke-width="3"/>
-
-        <!-- Flowing cloak -->
-        <path d="M-14-12 Q-30 4-36 38
-                 Q-20 30-10 52
-                 L12 52 Q28 25 38 38
-                 Q30 0 14-12Z"
-              fill="#75416e" stroke="#482748" stroke-width="3"/>
-
-        <!-- Gown -->
-        <path d="M-12-12L-20 18L-30 52
-                 Q0 65 30 52L20 18L12-12Z"
-              fill="#b8a0d8" stroke="#69517e" stroke-width="3"/>
-
-        <!-- Gown details -->
-        <path d="M0-4L-5 48M-15 25L-24 48
-                 M15 25L24 48"
-              fill="none" stroke="#eadcf7" stroke-width="3"/>
-
-        <!-- Arms -->
-        <path d="M-15-8L-31 12M15-8L30 12"
-              stroke="#e6bfa1" stroke-width="7"
-              stroke-linecap="round"/>
-
-        <!-- Face -->
-        <ellipse cy="-33" rx="13" ry="16"
-                 fill="#edc9a7" stroke="#875f48" stroke-width="2"/>
-
-        <!-- Hair -->
-        <path d="M-14-34Q-20-58 0-57
-                 Q20-58 15-34L12-45L-12-45Z"
-              fill="#49302c" stroke="#30201e" stroke-width="2"/>
-
-        <!-- Crown -->
-        <path d="M-15-47L-13-59L-5-51
-                 L0-65L6-51L14-59L16-47Z"
-              fill="#e6c66f" stroke="#8c652f" stroke-width="2"/>
-
-        <!-- Face features -->
-        <circle cx="-5" cy="-33" r="1.8" fill="#46302a"/>
-        <circle cx="5" cy="-33" r="1.8" fill="#46302a"/>
-        <path d="M-4-26Q0-23 4-26"
-              fill="none" stroke="#87513e" stroke-width="1.5"/>
-
-        <!-- Boots -->
-        <path d="M-12 48V61H-1V53
-                 M8 48V61H19V53"
-              fill="#46302c" stroke="#30201e" stroke-width="2"/>
-      </g>
-
-      <!-- REGION LABELS -->
-      <g class="map-labels">
-        <text x="90" y="880">THE QUIET VILLAGE</text>
-        <text x="140" y="330">THE WHISPERING PINES</text>
-        <text x="210" y="445">THE RUINED WATCHTOWER</text>
-        <text x="500" y="400">STARFALL LAKE</text>
-        <text x="650" y="770">MOONSTONE BRIDGE</text>
-        <text x="1010" y="420">THE FROSTBOUND CITADEL</text>
-      </g>
-
-      <!-- MAP TITLE -->
-      <g class="map-labels">
-        <text x="700" y="90" text-anchor="middle"
-              class="map-title">THE WINTER REALM</text>
-        <text x="700" y="120" text-anchor="middle"
-              class="map-subtitle">
-          A JOURNEY THROUGH FORGOTTEN KINGDOMS
-        </text>
-      </g>
-
-    </svg>
   </div>
 </section>
       </div>
@@ -996,14 +821,16 @@ window.LEGACY_IMPORT = {"through":"2026-10-17","days":{"2026-09-05":{"tasks":[{"
     return tasks;
   };
 
+
 const JOURNEY_NODES = [
-  [120,790],[180,740],[220,680],[260,650],
-  [330,630],[390,560],[460,510],[540,520],
-  [620,560],[720,690],[790,710],[850,690],
-  [900,650],[970,610],[1030,550],[1080,500],
-  [1140,450],[1180,410],[1200,380],[1220,360],
-  [1230,355],[1240,350]
+  [400,850],[500,810],[570,790],[620,750],
+  [700,780],[780,740],[850,690],[850,620],
+  [780,570],[700,600],[600,620],[480,560],
+  [450,470],[500,420],[600,390],[750,350],
+  [900,370],[1050,400],[1100,420],[1200,350],
+  [1300,300],[1300,250]
 ];
+
   function updateJourney() {
     const journeyTasks = state.tasks.filter(t=>!t.deleted && !t.legacy && Number(t.minutes)>0 && t.date >= "2026-11-02" && t.date <= "2026-12-16");
     const completed = journeyTasks.filter(t=>t.completed).length;
